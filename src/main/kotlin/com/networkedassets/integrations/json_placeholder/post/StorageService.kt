@@ -3,20 +3,18 @@ package com.networkedassets.integrations.json_placeholder.post
 import com.networkedassets.integrations.common.logger
 import com.networkedassets.integrations.common.objectMapper
 import java.io.File
-import java.io.IOException
 
 object StorageService {
     private val LOGGER = logger(this::class.java)
-    private const val POST_DIR = "posts/"
+    const val POSTS_DIR = "posts/"
 
-    fun storePostAsJsonFile(posts: Map<Int?, Post>) {
+    fun storePostsAsJsonFile(posts: Map<Int?, List<Post>>) {
         LOGGER.debug("Create directory for posts...")
         createDir()
-        // TODO - what about null objects
-        posts.forEach { post ->
+        posts.forEach { (postId, post) ->
             try {
-                objectMapper.writeValue(File("$POST_DIR${post.key}.json"), post.value)
-            } catch (e: IOException) {
+                objectMapper.writeValue(File("$POSTS_DIR${postId}.json"), post)
+            } catch (e: Exception) {
                 LOGGER.error("Error while store posts as file: ${e.localizedMessage}")
             }
         }
@@ -24,21 +22,22 @@ object StorageService {
     }
 
     private fun createDir() {
-        val directory = File(POST_DIR)
+        val directory = File(POSTS_DIR)
         if (!directory.exists()) {
             directory.mkdir()
         } else {
-            LOGGER.debug("Remove directory with posts json files.")
+            LOGGER.debug("Remove directory with content posts json files.")
             deleteDirectoryWithContent(directory)
         }
     }
 
     private fun deleteDirectoryWithContent(directory: File) {
         if (!directory.deleteRecursively()) {
-            //TODO- throw exception
-            LOGGER.error("Error while delete posts json files.")
+            throw DeleteDirectoryException("Delete posts json files error: Check path $POSTS_DIR dir for partial deletion of files.")
         } else {
             directory.mkdir()
         }
     }
 }
+
+class DeleteDirectoryException(message: String) : Exception("Storing posts error: $message")

@@ -60,7 +60,6 @@
             <groupId>org.jetbrains.kotlin</groupId>
             <artifactId>kotlin-stdlib</artifactId>
         </dependency>
-
         <dependency>
             <groupId>com.fasterxml.jackson.module</groupId>
             <artifactId>jackson-module-kotlin</artifactId>
@@ -116,7 +115,6 @@
         </pluginManagement>
 
         <plugins>
-
             <plugin>
                 <groupId>org.jetbrains.kotlin</groupId>
                 <artifactId>kotlin-maven-plugin</artifactId>
@@ -138,7 +136,6 @@
                         <configuration>
                             <sourceDirs>
                                 <sourceDir>src/main/kotlin</sourceDir>
-                                <sourceDir>src/main/java</sourceDir>
                             </sourceDirs>
                         </configuration>
                     </execution>
@@ -150,7 +147,6 @@
                         <configuration>
                             <sourceDirs>
                                 <sourceDir>src/test/kotlin</sourceDir>
-                                <sourceDir>src/test/java</sourceDir>
                             </sourceDirs>
                         </configuration>
                     </execution>
@@ -162,12 +158,6 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
-                    <!--
-                        Activate the use of TCP to transmit events to the plugin to avoid getting
-                        "Corrupted STDOUT by directly writing to native stream in forked JVM" errors when
-                        running concurrent tests.
-                    -->
-                    <forkNode implementation="org.apache.maven.plugin.surefire.extensions.SurefireForkNodeFactory"/>
                     <!--
                         Disable forking so we can see the log output from the test immediately, instead of at the
                         end of each test execution.

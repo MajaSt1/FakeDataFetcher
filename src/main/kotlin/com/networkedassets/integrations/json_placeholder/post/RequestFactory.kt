@@ -1,11 +1,10 @@
 package com.networkedassets.integrations.json_placeholder.post
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.networkedassets.integrations.common.FakeAPIRequestConfig
 import com.networkedassets.integrations.common.objectMapper
 import java.net.URL
 
-fun sendRequestToGetAllPosts(fakeAPIRequestConfig: FakeAPIRequestConfig): Map<Int?, Post> {
+fun sendRequestToGetAllPosts(fakeAPIRequestConfig: FakeAPIRequestConfig): Map<Int?, List<Post>> {
     return URL("${fakeAPIRequestConfig.requestBaseUrl}/posts").openConnection().apply {
         readTimeout = fakeAPIRequestConfig.receiveTimeout
         connectTimeout = fakeAPIRequestConfig.connectionTimeout
@@ -17,7 +16,7 @@ fun sendRequestToGetAllPosts(fakeAPIRequestConfig: FakeAPIRequestConfig): Map<In
             val body = node.get("body").asText()
 
             return@map Post(userId, id, title, body)
-        }.associateBy(Post::id)
+        }.groupBy(Post::id)
         result
     }
 }
